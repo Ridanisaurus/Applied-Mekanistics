@@ -8,7 +8,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.api.distmarker.Dist;
@@ -140,14 +139,11 @@ public class AppliedMekanistics {
         for (var tier : AMItems.Tier.values()) {
             var cell = AMItems.get(tier);
             var portable = AMItems.getPortableCell(tier);
+            var path = cell.getId().getPath();
 
-            registerCell(cell::get, portable::get, cell.getId().getPath());
+            StorageCellModels.registerModel(cell.get(), id("block/drive/cells/" + path));
+            StorageCellModels.registerModel(portable.get(), id("block/drive/cells/" + path));
         }
-    }
-
-    private void registerCell(ItemLike cell, ItemLike portableCell, String path) {
-        StorageCellModels.registerModel(cell, id("block/drive/cells/" + path));
-        StorageCellModels.registerModel(portableCell, id("block/drive/cells/" + path));
     }
 
     private void initializeUpgrades() {

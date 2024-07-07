@@ -15,7 +15,6 @@ public class MekAE2DataGenerators {
         generator.addProvider(true, new ItemTagsProvider(packOutput, lookupProvider,
                 blockTagsProvider.contentsGetter(), existingFileHelper));
 
-        generator.addProvider(true, new BlockModelProvider(packOutput, existingFileHelper));
         generator.addProvider(true, new ItemModelProvider(packOutput, existingFileHelper));
         generator.addProvider(true, new RecipeProvider(packOutput, lookupProvider));
     }

@@ -79,24 +79,25 @@ public class AMItems {
                     CHEMICAL_CELL_HOUSING.get()));
 
     public static final DeferredItem<Item> PORTABLE_CHEMICAL_CELL_1K = ITEMS.register(
-            "portable_chemical_storage_cell_1k",
-            () -> new ChemicalPortableCellItem(18, AMMenus.PORTABLE_CHEMICAL_CELL_TYPE,
-                    StorageTier.SIZE_1K, properties().stacksTo(1), 0));
+            "portable_chemical_cell_1k",
+            () -> new ChemicalPortableCellItem(18, AMMenus.PORTABLE_CHEMICAL_CELL_TYPE, StorageTier.SIZE_1K,
+                    properties().stacksTo(1), 0x80caff));
     public static final DeferredItem<Item> PORTABLE_CHEMICAL_CELL_4K = ITEMS.register(
-            "portable_chemical_storage_cell_4k", () -> new ChemicalPortableCellItem(18,
-                    AMMenus.PORTABLE_CHEMICAL_CELL_TYPE, StorageTier.SIZE_4K, properties().stacksTo(1), 0));
+            "portable_chemical_cell_4k",
+            () -> new ChemicalPortableCellItem(18, AMMenus.PORTABLE_CHEMICAL_CELL_TYPE, StorageTier.SIZE_4K,
+                    properties().stacksTo(1), 0x80caff));
     public static final DeferredItem<Item> PORTABLE_CHEMICAL_CELL_16K = ITEMS.register(
-            "portable_chemical_storage_cell_16k",
+            "portable_chemical_cell_16k",
             () -> new ChemicalPortableCellItem(18, AMMenus.PORTABLE_CHEMICAL_CELL_TYPE, StorageTier.SIZE_16K,
-                    properties().stacksTo(1), 0));
+                    properties().stacksTo(1), 0x80caff));
     public static final DeferredItem<Item> PORTABLE_CHEMICAL_CELL_64K = ITEMS.register(
-            "portable_chemical_storage_cell_64k",
+            "portable_chemical_cell_64k",
             () -> new ChemicalPortableCellItem(18, AMMenus.PORTABLE_CHEMICAL_CELL_TYPE, StorageTier.SIZE_64K,
-                    properties().stacksTo(1), 0));
+                    properties().stacksTo(1), 0x80caff));
     public static final DeferredItem<Item> PORTABLE_CHEMICAL_CELL_256K = ITEMS.register(
-            "portable_chemical_storage_cell_256k",
+            "portable_chemical_cell_256k",
             () -> new ChemicalPortableCellItem(18, AMMenus.PORTABLE_CHEMICAL_CELL_TYPE, StorageTier.SIZE_256K,
-                    properties().stacksTo(1), 0));
+                    properties().stacksTo(1), 0x80caff));
 
     public static final DeferredItem<PartItem<ChemicalP2PTunnelPart>> CHEMICAL_P2P_TUNNEL = Util.make(() -> {
         PartModels.registerModels(PartModelsHelper.createModels(ChemicalP2PTunnelPart.class));
