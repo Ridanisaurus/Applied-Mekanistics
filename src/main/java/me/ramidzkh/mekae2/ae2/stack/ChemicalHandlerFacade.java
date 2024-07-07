@@ -69,7 +69,7 @@ public record ChemicalHandlerFacade(@Nullable IChemicalHandler[] handlers, boole
 
     @Override
     public Component getDescription() {
-        return GuiText.ExternalStorage.text(AMText.CHEMICAL);
+        return GuiText.ExternalStorage.text(AMText.CHEMICALS);
     }
 
     @Override

@@ -16,7 +16,8 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
     private static final ResourceLocation P2P_TUNNEL_BASE_PART = AppEng.makeId("part/p2p/p2p_tunnel_base");
     private static final ResourceLocation STORAGE_CELL_LED = AppEng.makeId("item/storage_cell_led");
     private static final ResourceLocation PORTABLE_CELL_LED = AppEng.makeId("item/portable_cell_led");
-    private static final ResourceLocation OSMIUM_BLOCK = new ResourceLocation("mekanism", "block/block_osmium");
+    private static final ResourceLocation OSMIUM_BLOCK = ResourceLocation.fromNamespaceAndPath("mekanism",
+            "block/block_osmium");
 
     public ItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
         super(output, AppliedMekanistics.ID, existingFileHelper);

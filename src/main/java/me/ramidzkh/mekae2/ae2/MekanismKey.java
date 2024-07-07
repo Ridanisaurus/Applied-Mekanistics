@@ -5,10 +5,17 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -17,6 +24,7 @@ import net.minecraft.world.level.Level;
 
 import me.ramidzkh.mekae2.util.ChemicalBridge;
 import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -30,8 +38,14 @@ import mekanism.api.radiation.IRadiationManager;
 
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
+import appeng.core.AELog;
 
 public class MekanismKey extends AEKey {
+
+    public static final MapCodec<MekanismKey> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Chemical.BOXED_CODEC.fieldOf("id").forGetter(key -> key.getStack().getChemical()))
+            .apply(instance, chemical -> MekanismKey.of(chemical.getStack(1))));
+    public static final Codec<MekanismKey> CODEC = MAP_CODEC.codec();
 
     public static final byte GAS = 0;
     public static final byte INFUSION = 1;
@@ -62,17 +76,13 @@ public class MekanismKey extends AEKey {
     }
 
     public byte getForm() {
-        if (stack instanceof GasStack) {
-            return GAS;
-        } else if (stack instanceof InfusionStack) {
-            return INFUSION;
-        } else if (stack instanceof PigmentStack) {
-            return PIGMENT;
-        } else if (stack instanceof SlurryStack) {
-            return SLURRY;
-        } else {
-            throw new UnsupportedOperationException();
-        }
+        return switch (stack) {
+            case GasStack ignored -> GAS;
+            case InfusionStack ignored -> INFUSION;
+            case PigmentStack ignored -> PIGMENT;
+            case SlurryStack ignored -> SLURRY;
+            default -> throw new UnsupportedOperationException();
+        };
     }
 
     @Override
@@ -85,32 +95,31 @@ public class MekanismKey extends AEKey {
         return this;
     }
 
+    public static MekanismKey fromTag(HolderLookup.Provider registries, CompoundTag tag) {
+        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
+
+        try {
+            return CODEC.decode(ops, tag).getOrThrow().getFirst();
+        } catch (Exception e) {
+            AELog.debug("Tried to load an invalid chemical key from NBT: %s", tag, e);
+            return null;
+        }
+    }
+
     @Override
-    public CompoundTag toTag() {
-        var tag = new CompoundTag();
-        tag.putByte("t", getForm());
-        return stack.write(tag);
+    public CompoundTag toTag(HolderLookup.Provider registries) {
+        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
+        return (CompoundTag) CODEC.encodeStart(ops, this).getOrThrow();
     }
 
     @Override
     public Object getPrimaryKey() {
-        return stack.getType();
+        return stack.getChemical();
     }
 
     @Override
     public ResourceLocation getId() {
         return stack.getTypeRegistryName();
-    }
-
-    @Override
-    public void writeToPacket(FriendlyByteBuf data) {
-        data.writeByte(getForm());
-        stack.writeToPacket(data);
-    }
-
-    @Override
-    protected Component computeDisplayName() {
-        return stack.getType().getTextComponent();
     }
 
     @Override
@@ -122,18 +131,43 @@ public class MekanismKey extends AEKey {
     }
 
     @Override
+    protected Component computeDisplayName() {
+        return stack.getChemical().getTextComponent();
+    }
+
+    @Override
     public boolean isTagged(TagKey<?> tag) {
-        if (stack.getType() instanceof Gas gas) {
-            return tag.registry().equals(MekanismAPI.GAS_REGISTRY_NAME) && gas.is((TagKey<Gas>) tag);
-        } else if (stack.getType() instanceof InfuseType infuse) {
-            return tag.registry().equals(MekanismAPI.INFUSE_TYPE_REGISTRY_NAME) && infuse.is((TagKey<InfuseType>) tag);
-        } else if (stack.getType() instanceof Pigment pigment) {
-            return tag.registry().equals(MekanismAPI.PIGMENT_REGISTRY_NAME) && pigment.is((TagKey<Pigment>) tag);
-        } else if (stack.getType() instanceof Slurry slurry) {
-            return tag.registry().equals(MekanismAPI.SLURRY_REGISTRY_NAME) && slurry.is((TagKey<Slurry>) tag);
-        } else {
-            throw new UnsupportedOperationException();
-        }
+        return switch (stack.getChemical()) {
+            case Gas gas -> tag.registry().equals(MekanismAPI.GAS_REGISTRY_NAME)
+                    && gas.is((TagKey<Gas>) tag);
+            case InfuseType infuse -> tag.registry().equals(MekanismAPI.INFUSE_TYPE_REGISTRY_NAME)
+                    && infuse.is((TagKey<InfuseType>) tag);
+            case Pigment pigment -> tag.registry().equals(MekanismAPI.PIGMENT_REGISTRY_NAME)
+                    && pigment.is((TagKey<Pigment>) tag);
+            case Slurry slurry -> tag.registry().equals(MekanismAPI.SLURRY_REGISTRY_NAME)
+                    && slurry.is((TagKey<Slurry>) tag);
+            default -> throw new UnsupportedOperationException();
+        };
+    }
+
+    @Override
+    public <T> @Nullable T get(DataComponentType<T> type) {
+        return null;
+    }
+
+    @Override
+    public boolean hasComponents() {
+        return false;
+    }
+
+    @Override
+    public void writeToPacket(RegistryFriendlyByteBuf data) {
+        ChemicalStack.BOXED_STREAM_CODEC.encode(data, stack);
+    }
+
+    public static MekanismKey fromPacket(RegistryFriendlyByteBuf data) {
+        var stack = ChemicalStack.BOXED_STREAM_CODEC.decode(data);
+        return new MekanismKey(stack);
     }
 
     @Override
@@ -143,18 +177,18 @@ public class MekanismKey extends AEKey {
         if (o == null || getClass() != o.getClass())
             return false;
         var that = (MekanismKey) o;
-        return Objects.equals(stack.getType(), that.stack.getType());
+        return Objects.equals(stack.getChemical(), that.stack.getChemical());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(stack.getType());
+        return Objects.hash(stack.getChemical());
     }
 
     @Override
     public String toString() {
         return "MekanismKey{" +
-                "stack=" + stack.getType() +
+                "stack=" + stack.getChemical() +
                 '}';
     }
 }

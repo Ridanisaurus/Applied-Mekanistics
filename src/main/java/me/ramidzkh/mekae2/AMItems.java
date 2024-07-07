@@ -53,9 +53,9 @@ public class AMItems {
                             // For block items, the block controls the creative tab
                             if (item instanceof AEBaseBlockItem baseItem
                                     && baseItem.getBlock() instanceof AEBaseBlock baseBlock) {
-                                baseBlock.addToMainCreativeTab(output);
+                                baseBlock.addToMainCreativeTab(params, output);
                             } else if (item instanceof AEBaseItem baseItem) {
-                                baseItem.addToMainCreativeTab(output);
+                                baseItem.addToMainCreativeTab(params, output);
                             } else {
                                 output.accept(item);
                             }

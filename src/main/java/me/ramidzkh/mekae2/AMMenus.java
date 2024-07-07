@@ -2,7 +2,7 @@ package me.ramidzkh.mekae2;
 
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import appeng.api.implementations.menuobjects.IPortableTerminal;
 import appeng.client.gui.me.common.MEStorageScreen;
@@ -18,9 +18,9 @@ public class AMMenus {
 
     @SuppressWarnings("RedundantTypeArguments")
     public static void initialize(IEventBus bus) {
-        bus.addListener((FMLClientSetupEvent event) -> event.enqueueWork(() -> {
-            InitScreens.<MEStorageMenu, MEStorageScreen<MEStorageMenu>>register(PORTABLE_CHEMICAL_CELL_TYPE,
+        bus.addListener((RegisterMenuScreensEvent event) -> {
+            InitScreens.<MEStorageMenu, MEStorageScreen<MEStorageMenu>>register(event, PORTABLE_CHEMICAL_CELL_TYPE,
                     MEStorageScreen::new, "/screens/terminals/portable_chemical_cell.json");
-        }));
+        });
     }
 }

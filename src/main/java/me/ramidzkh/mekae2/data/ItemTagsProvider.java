@@ -27,10 +27,10 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider {
     protected void addTags(HolderLookup.Provider provider) {
         var tanks = P2PTunnelAttunement.getAttunementTag(AMItems.CHEMICAL_P2P_TUNNEL::get);
 
-        tag(tanks).addOptional(new ResourceLocation("mekanism", "basic_chemical_tank"));
-        tag(tanks).addOptional(new ResourceLocation("mekanism", "advanced_chemical_tank"));
-        tag(tanks).addOptional(new ResourceLocation("mekanism", "elite_chemical_tank"));
-        tag(tanks).addOptional(new ResourceLocation("mekanism", "ultimate_chemical_tank"));
-        tag(tanks).addOptional(new ResourceLocation("mekanism", "creative_chemical_tank"));
+        tag(tanks).addOptional(ResourceLocation.fromNamespaceAndPath("mekanism", "basic_chemical_tank"));
+        tag(tanks).addOptional(ResourceLocation.fromNamespaceAndPath("mekanism", "advanced_chemical_tank"));
+        tag(tanks).addOptional(ResourceLocation.fromNamespaceAndPath("mekanism", "elite_chemical_tank"));
+        tag(tanks).addOptional(ResourceLocation.fromNamespaceAndPath("mekanism", "ultimate_chemical_tank"));
+        tag(tanks).addOptional(ResourceLocation.fromNamespaceAndPath("mekanism", "creative_chemical_tank"));
     }
 }

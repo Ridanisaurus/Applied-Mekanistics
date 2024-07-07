@@ -37,6 +37,6 @@ public class MekCapabilities {
     }
 
     private static ResourceLocation rl(String path) {
-        return new ResourceLocation(MekanismAPI.MEKANISM_MODID, path);
+        return ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, path);
     }
 }

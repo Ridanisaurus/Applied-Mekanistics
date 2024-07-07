@@ -34,7 +34,8 @@ public class AMChemicalStackRenderer implements AEKeyRenderHandler<MekanismKey> 
         var stack = what.getStack();
 
         Blitter.sprite(
-                Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(stack.getType().getIcon()))
+                Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
+                        .apply(stack.getChemical().getIcon()))
                 .colorRgb(stack.getChemicalTint())
                 // Most fluid texture have transparency, but we want an opaque slot
                 .blending(false)
@@ -47,7 +48,7 @@ public class AMChemicalStackRenderer implements AEKeyRenderHandler<MekanismKey> 
             int combinedLight, Level level) {
         var stack = what.getStack();
         var sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
-                .apply(stack.getType().getIcon());
+                .apply(stack.getChemical().getIcon());
         var color = stack.getChemicalTint();
 
         poseStack.pushPose();
@@ -67,34 +68,30 @@ public class AMChemicalStackRenderer implements AEKeyRenderHandler<MekanismKey> 
         var y1 = -scale / 2;
 
         var transform = poseStack.last().pose();
-        buffer.vertex(transform, x0, y1, 0)
-                .color(color)
-                .uv(sprite.getU0(), sprite.getV1())
-                .overlayCoords(OverlayTexture.NO_OVERLAY)
-                .uv2(combinedLight)
-                .normal(0, 0, 1)
-                .endVertex();
-        buffer.vertex(transform, x1, y1, 0)
-                .color(color)
-                .uv(sprite.getU1(), sprite.getV1())
-                .overlayCoords(OverlayTexture.NO_OVERLAY)
-                .uv2(combinedLight)
-                .normal(0, 0, 1)
-                .endVertex();
-        buffer.vertex(transform, x1, y0, 0)
-                .color(color)
-                .uv(sprite.getU1(), sprite.getV0())
-                .overlayCoords(OverlayTexture.NO_OVERLAY)
-                .uv2(combinedLight)
-                .normal(0, 0, 1)
-                .endVertex();
-        buffer.vertex(transform, x0, y0, 0)
-                .color(color)
-                .uv(sprite.getU0(), sprite.getV0())
-                .overlayCoords(OverlayTexture.NO_OVERLAY)
-                .uv2(combinedLight)
-                .normal(0, 0, 1)
-                .endVertex();
+        buffer.addVertex(transform, x0, y1, 0)
+                .setColor(color)
+                .setUv(sprite.getU0(), sprite.getV1())
+                .setOverlay(OverlayTexture.NO_OVERLAY)
+                .setLight(combinedLight)
+                .setNormal(0, 0, 1);
+        buffer.addVertex(transform, x1, y1, 0)
+                .setColor(color)
+                .setUv(sprite.getU1(), sprite.getV1())
+                .setOverlay(OverlayTexture.NO_OVERLAY)
+                .setLight(combinedLight)
+                .setNormal(0, 0, 1);
+        buffer.addVertex(transform, x1, y0, 0)
+                .setColor(color)
+                .setUv(sprite.getU1(), sprite.getV0())
+                .setOverlay(OverlayTexture.NO_OVERLAY)
+                .setLight(combinedLight)
+                .setNormal(0, 0, 1);
+        buffer.addVertex(transform, x0, y0, 0)
+                .setColor(color)
+                .setUv(sprite.getU0(), sprite.getV0())
+                .setOverlay(OverlayTexture.NO_OVERLAY)
+                .setLight(combinedLight)
+                .setNormal(0, 0, 1);
         poseStack.popPose();
     }
 

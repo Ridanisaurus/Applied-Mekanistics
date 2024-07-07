@@ -15,10 +15,10 @@ import appeng.helpers.patternprovider.PatternProviderLogicHost;
 @WailaPlugin
 public class AMJadePlugin implements IWailaPlugin {
     private static final ResourceLocation[] CHEMICALS = {
-            new ResourceLocation("mekanism", "gas"),
-            new ResourceLocation("mekanism", "infuse_type"),
-            new ResourceLocation("mekanism", "pigment"),
-            new ResourceLocation("mekanism", "slurry"),
+            ResourceLocation.fromNamespaceAndPath("mekanism", "gas"),
+            ResourceLocation.fromNamespaceAndPath("mekanism", "infuse_type"),
+            ResourceLocation.fromNamespaceAndPath("mekanism", "pigment"),
+            ResourceLocation.fromNamespaceAndPath("mekanism", "slurry"),
     };
 
     @Override

@@ -9,13 +9,13 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.inventory.qio.IQIOComponent;
 import mekanism.api.security.ISecurityObject;
 
+import appeng.api.AECapabilities;
 import appeng.api.networking.GridHelper;
-import appeng.capabilities.AppEngCapabilities;
 
 public class QioSupport {
 
     public static void onBlockEntityCapability(RegisterCapabilitiesEvent event) {
-        event.registerBlock(AppEngCapabilities.ME_STORAGE, (level, pos, state, be, side) -> {
+        event.registerBlock(AECapabilities.ME_STORAGE, (level, pos, state, be, side) -> {
             if (be != null && side != null) {
                 // guess the source...
                 // if you're trying to qio across a compact machine wall or something, sorry!
@@ -45,6 +45,7 @@ public class QioSupport {
             }
 
             return null;
-        }, BuiltInRegistries.BLOCK.get(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "qio_dashboard")));
+        }, BuiltInRegistries.BLOCK
+                .get(ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "qio_dashboard")));
     }
 }

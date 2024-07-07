@@ -28,6 +28,7 @@ import me.ramidzkh.mekae2.ae2.stack.MekanismStackImportStrategy;
 import me.ramidzkh.mekae2.data.MekAE2DataGenerators;
 import me.ramidzkh.mekae2.qio.QioSupport;
 
+import appeng.api.AECapabilities;
 import appeng.api.behaviors.ContainerItemStrategy;
 import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.behaviors.GenericSlotCapacities;
@@ -42,7 +43,6 @@ import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.upgrades.Upgrades;
-import appeng.capabilities.AppEngCapabilities;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
 import appeng.menu.MenuOpener;
@@ -56,7 +56,7 @@ public class AppliedMekanistics {
     public static final String ID = "appmek";
 
     public static ResourceLocation id(String path) {
-        return new ResourceLocation(ID, path);
+        return ResourceLocation.fromNamespaceAndPath(ID, path);
     }
 
     public AppliedMekanistics(IEventBus bus) {
@@ -109,7 +109,7 @@ public class AppliedMekanistics {
 
     private void registerGenericAdapters(RegisterCapabilitiesEvent event) {
         for (var block : BuiltInRegistries.BLOCK) {
-            if (event.isBlockRegistered(AppEngCapabilities.GENERIC_INTERNAL_INV, block)) {
+            if (event.isBlockRegistered(AECapabilities.GENERIC_INTERNAL_INV, block)) {
                 registerGenericInvAdapter(event, block, MekCapabilities.GAS.block(),
                         GenericStackChemicalStorage.OfGas::new);
                 registerGenericInvAdapter(event, block, MekCapabilities.INFUSION.block(),
@@ -174,7 +174,7 @@ public class AppliedMekanistics {
     private static <T> void registerGenericInvAdapter(RegisterCapabilitiesEvent event, Block block,
             BlockCapability<T, Direction> capability, Function<GenericInternalInventory, T> adapter) {
         event.registerBlock(capability, (level, pos, state, blockEntity, context) -> {
-            var genericInv = level.getCapability(AppEngCapabilities.GENERIC_INTERNAL_INV, pos, state,
+            var genericInv = level.getCapability(AECapabilities.GENERIC_INTERNAL_INV, pos, state,
                     blockEntity, context);
             if (genericInv != null) {
                 return adapter.apply(genericInv);
